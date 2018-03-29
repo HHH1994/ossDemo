@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>上传图片至OSS服务器DEMO(分片上传)</title>
+</head>
+<body>
+<input type="file" id="pic">
+<button onclick="upload()">上传</button>
+</body>
+<script src="jquery-3.2.1.min.js"></script>
+<script src="http://gosspublic.alicdn.com/aliyun-oss-sdk-4.3.0.min.js"></script>
+<script type="text/javascript">
+    /*OSS服务器配置*/
+    var client = new OSS.Wrapper({
+        region:'oss服务器创建的地点',
+        //云账号AccessKey有所有API访问权限，建议遵循阿里云安全最佳实践，创建并使用STS方式来进行API访问
+        accessKeyId: '访问控制中创建的accesskeyId',
+        accessKeySecret: '访问控制中创建的accesskeyId对应的密钥,只有在刚创建的时候会显示,需要保存下来',
+        bucket: 'oss服务器上创建的bucket的名称'
+    });
+
+    function upload(){
+        var pic = document.getElementById("pic").files[0];//获取html5的file对象
+        /**
+         * 如果想将图片上传到某个文件夹的话,将文件夹路径拼接到picName中
+         * 如:存到test文件夹下"test/pic.jpg"
+         * @type {string}
+         */
+        var picName = "test/"+pic.name;//拼接上传图片名称
+        //上传图片至OSS服务器
+        client.multipartUpload(picName,pic).then(res=>{
+            console.log(res);
+    }).catch(err=>{
+            console.log(err);
+    })
+    }
+</script>
+</html>
